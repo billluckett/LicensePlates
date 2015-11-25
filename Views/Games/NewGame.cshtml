@@ -1,0 +1,74 @@
+﻿@model LicensePlatesDBFirst.Models.ViewModels.NewGameViewModel
+
+@{
+    ViewBag.Title = "New Game";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>NewGame</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Game</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="col-sm-6" style="max-width:380px;">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Game.UserId, "User", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10" style="padding-top:7px;font-weight:bold;">
+                    @Model.Game.User.UserName
+                    @Html.EditorFor(model => model.Game.UserId, new { htmlAttributes = new { @class = "form-control", style = "display:none;" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Game.Start, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Game.Start, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Game.Start, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Game.Stop, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Game.Stop, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Game.Stop, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Game.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Game.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Game.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div style="float:left;display:inline-block;margin-left:15px;">
+            <p style="margin-bottom:15px;">Countries to include in game:</p>
+            <div>
+                @Html.EditorFor(model => model.Actives)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to History", "History")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

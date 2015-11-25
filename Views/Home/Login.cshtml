@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>License Plates Tracker - @ViewBag.Title</h2>
+
+<h4 style="color:red;">@ViewBag.ErrMsg</h4>
+
+<p class="lead">Please enter your username to continue.</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <input class="form-control" name="username" placeholder="username" />
+    <br />
+    <button class="btn btn-success" type="submit">Login &raquo;</button>
+    <br /><br />
+}
+
+<script>
+    $(function () {
+        $("#logoutLink").hide();
+    });
+</script>

@@ -1,0 +1,287 @@
+﻿@model LicensePlatesDBFirst.Models.ViewModels.PlayViewModel
+
+@{
+    ViewBag.Title = "Play";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var game = Model.Game;
+    var date = game.Start.ToString("d");
+    var end = game.Stop.ToString("d");
+    date = (date.Equals(end)) ? date : date + " - " + end;
+    //var regions = Model.Regions.ToArray(); // really? ToArray()???
+    string[] regions = new string[] { "West & Southwest Perimeter", "Mountain West", "Midwest & Northeast", "The South" };
+
+    <script>var abbrs = [""];</script>
+    foreach (var p in Model.Plates)
+    {
+        <script>abbrs[abbrs.length] = "@p.Abbr"</script>
+    }
+
+}
+
+<style>
+    h4 {
+        color: darkblue;
+    }
+
+    .seenPlate {
+        font-weight: bold;
+        color: #0c0;
+    }
+
+    .unseenPlate {
+        font-weight: normal;
+        color: #009;
+    }
+
+    .status {
+        margin: 10px;
+        display: inline;
+        white-space:nowrap;
+    }
+</style>
+
+<script>
+    var seenColor = "#0c0";
+    var seenHColor = "#080";
+    var unseenColor = "#009";
+    var unseenHColor = "#007";
+</script>
+
+<!-- Top Section -->
+<section class="text-center">
+    <div class="clearfix"></div>
+
+    <div style="margin-top:15px;font-size:20px">
+        <div class="status" style="color:darkblue;">License Plates <span style="color:blue;font-weight:bold;margin-left:5px;">@date</span></div>
+        <div class="status">User: @game.User.UserName</div>
+        <div class="status">
+            <span style="color:darkblue;">Score: </span>
+            <span style="white-space:nowrap;height:40px;border:2px solid darkred;padding:3px;margin:10px 15px 10px 3px;">
+                <span id="score" class="seenPlate">@game.Score</span>
+                <span style="font-weight:bold;"> / @game.Possible</span>
+            </span>
+        </div>
+        <div class="status">
+            <button id="btnMap" type="button" class="btn btn-sm btn-default listView" onclick="showView('map');">Map View</button>
+            <button id="btnList" type="button" class="btn btn-sm btn-default mapView" onclick="showView('list');">List View</button>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+</section>
+
+<!-- EXPERIMENTING TO DELETE -->
+@*<div id="testColDiv" style="margin:auto;"></div>
+<div class="clearfix"></div>*@
+<!-- /EXPERIMENTING TO DELETE -->
+
+<!-- List Section -->
+<section id="allPlates" class="listView" style="display:none;">
+    @foreach (var c in Model.Countries)
+    {
+        var plates = Model.Plates.Where(p => p.CountryId == c.Id);
+
+        <h4>@c.Name</h4>
+
+        if (c.Id == 1)
+        {
+            for (var i = 1; i <= 4; i++)
+            {
+                <div class="col-xs-6 col-md-2" style="width:200px;">
+                    <p style="font-weight:bold;color:blue;">
+                        @regions[i - 1] <br />
+                    </p>
+                    @foreach (var p in plates.Where(w => w.RegionId == i))
+                    {
+                        var ckId = "p" + p.Id.ToString();
+                        var nameId = "pname" + p.Id.ToString();
+                        var seen = game.GamePlates.Select(g => g.PlateId).ToList().Contains(p.Id);
+                        var pClass = seen ? "seenPlate" : "unseenPlate";
+                        <input type="checkbox" class="ckPlate" id="@ckId" value="@seen" checked="@seen" onclick='setPlate("@p.Id")' style="display:inline-block" />
+                        <span id="@nameId" class="@pClass">@p.Name</span>
+                        <br />
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            foreach (var p in plates)
+            {
+                var ckId = "p" + p.Id.ToString();
+                var nameId = "pname" + p.Id.ToString();
+                var seen = game.GamePlates.Select(g => g.PlateId).ToList().Contains(p.Id);
+                var pClass = seen ? "seenPlate" : "unseenPlate";
+                <div class="col-xs-6 col-md-2" style="width:200px;">
+                    <input type="checkbox" class="ckPlate" id="@ckId" value="@seen" checked="@seen" onclick='setPlate("@p.Id")' style="display:inline-block" />
+                    <span id="@nameId" class="@pClass">@p.Name</span>
+                </div>
+            }
+        }
+
+        <div class="clearfix"></div>
+    }
+</section>
+
+<!-- Map Section -->
+<section class="mapView" id="mapSection" style="display:none;"></section>
+
+<!-- Bottom Section -->
+<section class="text-center">
+    <div class="clearfix"></div>
+    <p>
+        @Html.ActionLink("Game Settings", "Settings", new { id = game.Id }) |
+        @Html.ActionLink("Back to History", "History")
+    </p>
+</section>
+
+
+<script src="~/Scripts/us-map-1.0.1/lib/raphael.js"></script>
+<script src="~/Scripts/us-map-1.0.1/jquery.usmap.js"></script>
+<script>
+    var mapDiv = "mapDiv";
+    var mapW = 775;
+    var mapH = mapW * 21.0 / 31;
+    var mapDivHtml = '<div id="' + mapDiv + '" style="width:' + mapW + 'px;height:' + mapH + 'px;margin:auto;"></div>';
+
+    $(function () {
+        showView("map"); // "list" or "map"
+        setDimensions(mapDiv);
+        drawMap(mapDiv);
+    });
+
+    function showView(key) {
+        if (key == "map") {
+            $(".listView").hide();
+            drawMap(mapDiv);
+            $(".mapView").show();
+        } else {
+            $(".mapView").hide();
+            $(".listView").show();
+            $("#mapSection").html(''); // wipe out the entire element
+        }
+    }
+
+    function setDimensions(elId) {
+        $("#" + elId).css("width", "100%");
+        $("#" + elId).css("height", $("#" + elId).width * 3 / 5);
+    }
+
+    function drawMap(elId) {
+        $("#mapSection").html(mapDivHtml); // redraw the entire element
+
+        $('#' + elId).usmap({
+            stateStyles: {
+                fill: unseenColor
+            },
+            stateHoverStyles: {
+                fill: 'darkblue'
+            },
+            stateSpecificStyles: updateStateSpecificStyles(),
+            stateSpecificHoverStyles: updateStateSpecificHoverStyles(),
+            'click': function (event, data) {
+                var abbr = data.name;
+                var pid = abbrs.indexOf(abbr);
+
+                $("#p" + pid).prop("checked", !$("#p" + pid).prop("checked"));
+
+                this.stateSpecificStyles = updateStateSpecificStyles();
+                this.stateSpecificHoverStyles = updateStateSpecificHoverStyles();
+
+                $('#' + elId).usmap('trigger', abbr, 'mouseover', event);
+                setPlate(pid);
+            }
+        });
+    }
+
+    function updateStateSpecificStyles() {
+        styles = {};
+
+        for (var i = 1; i < 52; i++) { // going from 1 to 51: AL to DC
+            var key = abbrs[i];
+            styles[key] = { fill: getColor(i) };
+        }
+
+        return styles;
+    }
+
+    function updateStateSpecificHoverStyles() {
+        styles = {};
+
+        for (var i = 1; i < 52; i++) { // going from 1 to 51: AL to DC
+            var key = abbrs[i];
+            styles[key] = { fill: getHColor(i) };
+        }
+
+        return styles;
+    }
+
+    function getColor(pid) {
+        return $("#p" + pid).is(":checked") ? seenColor : unseenColor;
+    }
+
+    function getHColor(pid) {
+        return $("#p" + pid).is(":checked") ? seenHColor : unseenHColor;
+    }
+
+    function setPlate(pid) {
+        var seen = $("#p" + pid).is(":checked");
+        updateList(pid, seen);
+        updateServer(pid, seen);
+    }
+
+    function updateList(pid, seen) {
+        var oldClass = seen ? "unseenPlate" : "seenPlate";
+        var newClass = seen ? "seenPlate" : "unseenPlate";
+        $("#pname" + pid).removeClass(oldClass);
+        $("#pname" + pid).addClass(newClass);
+    }
+
+    function updateServer(pid, seen) {
+        $.ajax({
+            url: "/Games/UpdatePlateSeen",
+            data: { plateId: pid, seen: seen },
+            method: "post",
+            cache: false
+        }).done(function (d) {
+            $("#score").text(d.score);
+        }).fail(function () {
+            alert("updateServer() failed");
+        }).error(function (jqXHR, textStatus, errorThrown) {
+            alert("error: " + errorThrown);
+        });
+    }
+</script>
+
+<script>
+    var tchtml = "";
+    var tcWidth = 0;
+
+    for (var col = 0; col < 4; col++) {
+        var wCol = 0;
+        tchtml += '<div style="display:inline;">';
+
+        for (var i = 0; i < 4; i++) {
+            var newText = "abbr: " + abbrs[i] + "<br />";
+            tchtml += newText;
+            newWidth = getTextWidth(newText, "Arial");
+            wCol = (newWidth > wCol) ? newWidth : wCol;
+        }
+
+        tchtml += '</div>';
+        tcWidth += wCol;
+    }
+
+    $("#testColDiv").html(tchtml);
+    $("#testColDiv").css("width", tcWidth);
+
+    function getTextWidth(text, font) {
+        // re-use canvas object for better performance
+        var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+        var context = canvas.getContext("2d");
+        context.font = font;
+        var metrics = context.measureText(text);
+        return metrics.width;
+    };
+</script>

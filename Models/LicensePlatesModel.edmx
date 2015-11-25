@@ -1,0 +1,598 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="LicensePlatesDBFirstModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Start" Type="date" Nullable="false" />
+          <Property Name="Stop" Type="date" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" />
+          <Property Name="UserId" Type="int" />
+        </EntityType>
+        <EntityType Name="GameCountry">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GameId" Type="int" />
+          <Property Name="CountryId" Type="int" />
+        </EntityType>
+        <EntityType Name="GamePlate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GameId" Type="int" />
+          <Property Name="PlateId" Type="int" />
+        </EntityType>
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Filename" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="PlateId" Type="int" />
+        </EntityType>
+        <EntityType Name="Plate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Abbr" Type="varchar" MaxLength="255" />
+          <Property Name="CountryId" Type="int" />
+          <Property Name="RegionId" Type="int" />
+        </EntityType>
+        <EntityType Name="Region">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="CountryId" Type="int" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="255" />
+          <Property Name="LastName" Type="varchar" MaxLength="255" />
+          <Property Name="Address" Type="varchar" MaxLength="255" />
+          <Property Name="City" Type="varchar" MaxLength="255" />
+          <Property Name="State" Type="varchar" MaxLength="255" />
+          <Property Name="Email" Type="varchar" MaxLength="255" />
+          <Property Name="Phone" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK__Game__UserId__52593CB8">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Game" Type="Self.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GameCount__Count__5DCAEF64">
+          <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="GameCountry" Type="Self.GameCountry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameCountry">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GameCount__GameI__5CD6CB2B">
+          <End Role="Game" Type="Self.Game" Multiplicity="0..1" />
+          <End Role="GameCountry" Type="Self.GameCountry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameCountry">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GamePlate__GameI__571DF1D5">
+          <End Role="Game" Type="Self.Game" Multiplicity="0..1" />
+          <End Role="GamePlate" Type="Self.GamePlate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GamePlate">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GamePlate__Plate__5812160E">
+          <End Role="Plate" Type="Self.Plate" Multiplicity="0..1" />
+          <End Role="GamePlate" Type="Self.GamePlate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plate">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GamePlate">
+              <PropertyRef Name="PlateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Image__PlateId__4D94879B">
+          <End Role="Plate" Type="Self.Plate" Multiplicity="0..1" />
+          <End Role="Image" Type="Self.Image" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plate">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Image">
+              <PropertyRef Name="PlateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Plate__CountryId__47DBAE45">
+          <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="Plate" Type="Self.Plate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plate">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Plate__RegionId__48CFD27E">
+          <End Role="Region" Type="Self.Region" Multiplicity="0..1" />
+          <End Role="Plate" Type="Self.Plate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Region">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plate">
+              <PropertyRef Name="RegionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Region__CountryI__4316F928">
+          <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="Region" Type="Self.Region" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Region">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="LicensePlatesDBFirstModelStoreContainer">
+          <EntitySet Name="Country" EntityType="Self.Country" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Game" EntityType="Self.Game" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameCountry" EntityType="Self.GameCountry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GamePlate" EntityType="Self.GamePlate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Plate" EntityType="Self.Plate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Region" EntityType="Self.Region" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Game__UserId__52593CB8" Association="Self.FK__Game__UserId__52593CB8">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Game" EntitySet="Game" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GameCount__Count__5DCAEF64" Association="Self.FK__GameCount__Count__5DCAEF64">
+            <End Role="Country" EntitySet="Country" />
+            <End Role="GameCountry" EntitySet="GameCountry" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GameCount__GameI__5CD6CB2B" Association="Self.FK__GameCount__GameI__5CD6CB2B">
+            <End Role="Game" EntitySet="Game" />
+            <End Role="GameCountry" EntitySet="GameCountry" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GamePlate__GameI__571DF1D5" Association="Self.FK__GamePlate__GameI__571DF1D5">
+            <End Role="Game" EntitySet="Game" />
+            <End Role="GamePlate" EntitySet="GamePlate" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GamePlate__Plate__5812160E" Association="Self.FK__GamePlate__Plate__5812160E">
+            <End Role="Plate" EntitySet="Plate" />
+            <End Role="GamePlate" EntitySet="GamePlate" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Image__PlateId__4D94879B" Association="Self.FK__Image__PlateId__4D94879B">
+            <End Role="Plate" EntitySet="Plate" />
+            <End Role="Image" EntitySet="Image" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Plate__CountryId__47DBAE45" Association="Self.FK__Plate__CountryId__47DBAE45">
+            <End Role="Country" EntitySet="Country" />
+            <End Role="Plate" EntitySet="Plate" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Plate__RegionId__48CFD27E" Association="Self.FK__Plate__RegionId__48CFD27E">
+            <End Role="Region" EntitySet="Region" />
+            <End Role="Plate" EntitySet="Plate" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Region__CountryI__4316F928" Association="Self.FK__Region__CountryI__4316F928">
+            <End Role="Country" EntitySet="Country" />
+            <End Role="Region" EntitySet="Region" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="LicensePlatesDBFirstModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Country">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="GameCountries" Relationship="Self.FK__GameCount__Count__5DCAEF64" FromRole="Country" ToRole="GameCountry" />
+          <NavigationProperty Name="Plates" Relationship="Self.FK__Plate__CountryId__47DBAE45" FromRole="Country" ToRole="Plate" />
+          <NavigationProperty Name="Regions" Relationship="Self.FK__Region__CountryI__4316F928" FromRole="Country" ToRole="Region" />
+        </EntityType>
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Start" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Stop" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Game__UserId__52593CB8" FromRole="Game" ToRole="Users" />
+          <NavigationProperty Name="GameCountries" Relationship="Self.FK__GameCount__GameI__5CD6CB2B" FromRole="Game" ToRole="GameCountry" />
+          <NavigationProperty Name="GamePlates" Relationship="Self.FK__GamePlate__GameI__571DF1D5" FromRole="Game" ToRole="GamePlate" />
+        </EntityType>
+        <EntityType Name="GameCountry">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GameId" Type="Int32" />
+          <Property Name="CountryId" Type="Int32" />
+          <NavigationProperty Name="Country" Relationship="Self.FK__GameCount__Count__5DCAEF64" FromRole="GameCountry" ToRole="Country" />
+          <NavigationProperty Name="Game" Relationship="Self.FK__GameCount__GameI__5CD6CB2B" FromRole="GameCountry" ToRole="Game" />
+        </EntityType>
+        <EntityType Name="GamePlate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GameId" Type="Int32" />
+          <Property Name="PlateId" Type="Int32" />
+          <NavigationProperty Name="Game" Relationship="Self.FK__GamePlate__GameI__571DF1D5" FromRole="GamePlate" ToRole="Game" />
+          <NavigationProperty Name="Plate" Relationship="Self.FK__GamePlate__Plate__5812160E" FromRole="GamePlate" ToRole="Plate" />
+        </EntityType>
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Filename" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PlateId" Type="Int32" />
+          <NavigationProperty Name="Plate" Relationship="Self.FK__Image__PlateId__4D94879B" FromRole="Image" ToRole="Plate" />
+        </EntityType>
+        <EntityType Name="Plate">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Abbr" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="CountryId" Type="Int32" />
+          <Property Name="RegionId" Type="Int32" />
+          <NavigationProperty Name="Country" Relationship="Self.FK__Plate__CountryId__47DBAE45" FromRole="Plate" ToRole="Country" />
+          <NavigationProperty Name="GamePlates" Relationship="Self.FK__GamePlate__Plate__5812160E" FromRole="Plate" ToRole="GamePlate" />
+          <NavigationProperty Name="Images" Relationship="Self.FK__Image__PlateId__4D94879B" FromRole="Plate" ToRole="Image" />
+          <NavigationProperty Name="Region" Relationship="Self.FK__Plate__RegionId__48CFD27E" FromRole="Plate" ToRole="Region" />
+        </EntityType>
+        <EntityType Name="Region">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CountryId" Type="Int32" />
+          <NavigationProperty Name="Country" Relationship="Self.FK__Region__CountryI__4316F928" FromRole="Region" ToRole="Country" />
+          <NavigationProperty Name="Plates" Relationship="Self.FK__Plate__RegionId__48CFD27E" FromRole="Region" ToRole="Plate" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Phone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Games" Relationship="Self.FK__Game__UserId__52593CB8" FromRole="Users" ToRole="Game" />
+        </EntityType>
+        <Association Name="FK__GameCount__Count__5DCAEF64">
+          <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="GameCountry" Type="Self.GameCountry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameCountry">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Plate__CountryId__47DBAE45">
+          <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="Plate" Type="Self.Plate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plate">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Region__CountryI__4316F928">
+          <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+          <End Role="Region" Type="Self.Region" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Country">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Region">
+              <PropertyRef Name="CountryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Game__UserId__52593CB8">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Game" Type="Self.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GameCount__GameI__5CD6CB2B">
+          <End Role="Game" Type="Self.Game" Multiplicity="0..1" />
+          <End Role="GameCountry" Type="Self.GameCountry" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GameCountry">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GamePlate__GameI__571DF1D5">
+          <End Role="Game" Type="Self.Game" Multiplicity="0..1" />
+          <End Role="GamePlate" Type="Self.GamePlate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GamePlate">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GamePlate__Plate__5812160E">
+          <End Role="Plate" Type="Self.Plate" Multiplicity="0..1" />
+          <End Role="GamePlate" Type="Self.GamePlate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plate">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="GamePlate">
+              <PropertyRef Name="PlateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Image__PlateId__4D94879B">
+          <End Role="Plate" Type="Self.Plate" Multiplicity="0..1" />
+          <End Role="Image" Type="Self.Image" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Plate">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Image">
+              <PropertyRef Name="PlateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Plate__RegionId__48CFD27E">
+          <End Role="Region" Type="Self.Region" Multiplicity="0..1" />
+          <End Role="Plate" Type="Self.Plate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Region">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Plate">
+              <PropertyRef Name="RegionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="LicensePlatesDBFirstEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Countries" EntityType="Self.Country" />
+          <EntitySet Name="Games" EntityType="Self.Game" />
+          <EntitySet Name="GameCountries" EntityType="Self.GameCountry" />
+          <EntitySet Name="GamePlates" EntityType="Self.GamePlate" />
+          <EntitySet Name="Images" EntityType="Self.Image" />
+          <EntitySet Name="Plates" EntityType="Self.Plate" />
+          <EntitySet Name="Regions" EntityType="Self.Region" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK__GameCount__Count__5DCAEF64" Association="Self.FK__GameCount__Count__5DCAEF64">
+            <End Role="Country" EntitySet="Countries" />
+            <End Role="GameCountry" EntitySet="GameCountries" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Plate__CountryId__47DBAE45" Association="Self.FK__Plate__CountryId__47DBAE45">
+            <End Role="Country" EntitySet="Countries" />
+            <End Role="Plate" EntitySet="Plates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Region__CountryI__4316F928" Association="Self.FK__Region__CountryI__4316F928">
+            <End Role="Country" EntitySet="Countries" />
+            <End Role="Region" EntitySet="Regions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Game__UserId__52593CB8" Association="Self.FK__Game__UserId__52593CB8">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Game" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GameCount__GameI__5CD6CB2B" Association="Self.FK__GameCount__GameI__5CD6CB2B">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="GameCountry" EntitySet="GameCountries" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GamePlate__GameI__571DF1D5" Association="Self.FK__GamePlate__GameI__571DF1D5">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="GamePlate" EntitySet="GamePlates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GamePlate__Plate__5812160E" Association="Self.FK__GamePlate__Plate__5812160E">
+            <End Role="Plate" EntitySet="Plates" />
+            <End Role="GamePlate" EntitySet="GamePlates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Image__PlateId__4D94879B" Association="Self.FK__Image__PlateId__4D94879B">
+            <End Role="Plate" EntitySet="Plates" />
+            <End Role="Image" EntitySet="Images" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Plate__RegionId__48CFD27E" Association="Self.FK__Plate__RegionId__48CFD27E">
+            <End Role="Region" EntitySet="Regions" />
+            <End Role="Plate" EntitySet="Plates" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="LicensePlatesDBFirstModelStoreContainer" CdmEntityContainer="LicensePlatesDBFirstEntities">
+          <EntitySetMapping Name="Countries">
+            <EntityTypeMapping TypeName="LicensePlatesDBFirstModel.Country">
+              <MappingFragment StoreEntitySet="Country">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Games">
+            <EntityTypeMapping TypeName="LicensePlatesDBFirstModel.Game">
+              <MappingFragment StoreEntitySet="Game">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="Stop" ColumnName="Stop" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameCountries">
+            <EntityTypeMapping TypeName="LicensePlatesDBFirstModel.GameCountry">
+              <MappingFragment StoreEntitySet="GameCountry">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GameId" ColumnName="GameId" />
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GamePlates">
+            <EntityTypeMapping TypeName="LicensePlatesDBFirstModel.GamePlate">
+              <MappingFragment StoreEntitySet="GamePlate">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GameId" ColumnName="GameId" />
+                <ScalarProperty Name="PlateId" ColumnName="PlateId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Images">
+            <EntityTypeMapping TypeName="LicensePlatesDBFirstModel.Image">
+              <MappingFragment StoreEntitySet="Image">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Filename" ColumnName="Filename" />
+                <ScalarProperty Name="PlateId" ColumnName="PlateId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Plates">
+            <EntityTypeMapping TypeName="LicensePlatesDBFirstModel.Plate">
+              <MappingFragment StoreEntitySet="Plate">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Abbr" ColumnName="Abbr" />
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+                <ScalarProperty Name="RegionId" ColumnName="RegionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Regions">
+            <EntityTypeMapping TypeName="LicensePlatesDBFirstModel.Region">
+              <MappingFragment StoreEntitySet="Region">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CountryId" ColumnName="CountryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="LicensePlatesDBFirstModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
